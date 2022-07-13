@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+{% block meta-css %}
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+{% endblock %}
+{% block main-content %}
+
+<main class="flex-shrink-0"></main>
+<body>
+{{ data }}
+<a href="{% url 'judgements:api-root' %}">judgement apis</a>
+</body>
+
+    <!--  Popper and Bootstrap JS -->
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+
+{% endblock main-content %}

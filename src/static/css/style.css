@@ -1,0 +1,49 @@
+@charset "UTF-8";
+/* 頁面區塊(header/footer) 元素樣式(a/select) 組件樣式(card/list) 規則(margin/float) 表單系統(form) 表格系統(table/RWD table) */
+:root{
+    --border:1px solid rgba(0,0,0,.125);
+}
+*,html {font-family:'WenQuanYi Zen Hei','文泉驛正黑','Heiti TC','黑體-繁','LiHei Pro','儷黑 Pro','PingFang TC','Microsoft JhengHei','微軟正黑體',sans-serif;}
+
+/* 頁面區塊(header/footer) */
+p{text-align: justify;}
+/* 元素樣式(a/select) */
+
+
+@media screen and (max-width:991px) {
+    .tabBar .nav-tabs,.tabBar .nav-link{border:0}
+    .tabBar .nav-tabs{border-top:1px solid #dee2e6}
+    .tabBar .nav-link.active{background-color:var(--mark);border-radius:.25rem}
+    .tabBar .nav-link.active::before{font-family:"bootstrap-icons";content:"\f231"}
+}
+
+/* 規則(margin/float) */
+/* 表單系統(form) */
+/* 表格系統(table/RWD table) */
+/* 當螢幕小於767px時 */
+@media screen and (max-width:767px) {
+    /* 組件樣式(card/list) */
+    .resize{border-right:0!important}
+}
+
+/*當螢幕大於768px時*/
+@media screen and (min-width:768px) {
+    /* 組件樣式(card/list) */
+    .resize{min-width:200px;resize:horizontal;overflow:auto;flex:auto;width:25%}
+    .resize + .col{min-width:200px;flex:2}
+    .tabBar.navbar-expand-md{border:0}
+    .tabBar.navbar-expand-md>[class^="container"]{padding:0}
+}
+
+/*當螢幕大於992px時*/
+@media screen and (min-width:992px) {
+    .tabBar.navbar-expand-lg{border:0}
+    .tabBar.navbar-expand-lg>[class^="container"]{padding:0}
+
+    .thesis-first .table th{min-width:7em}
+}
+
+/*當螢幕大於1200px時*/
+@media screen and (min-width:1200px) {
+
+}

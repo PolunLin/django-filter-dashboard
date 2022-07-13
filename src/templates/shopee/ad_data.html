@@ -1,0 +1,12 @@
+
+{% extends "shopee/base.html" %}
+
+{% block main-content %}
+    <form method="get">
+        {{ filter.form.as_p }}
+        <input type="submit" />
+    </form>
+    {% for obj in filter.qs %}
+        {{ obj.keyword }} - ${{ obj.status }} {{ obj.mode }}<br />
+    {% endfor %}
+{% endblock %}
