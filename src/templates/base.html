@@ -1,30 +1,102 @@
-{% load static i18n %}<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>{% block title %}Django HTMx Fun{% endblock title %}</title>
+<!DOCTYPE html> {% load static i18n %} {% get_current_language as LANGUAGE_CODE %}
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.6.1/htmx.min.js" integrity="sha512-aUGLiEPPd4KYAKmXba1ZeH3JCtPEo3F8Ay1C7sRpSnOcfsczlP1j14jo3abBaMqJu9QC4pbh8TyKy9ekZ6j7Pw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/ic_fav.png' %}" />
+  <link rel="bookmark" href="{% static 'img/ic_fav.png' %}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>學術論文原創性自我檢測系統</title>
+  <!-- Bootstrap CSS -->
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  {% comment %} <link href="{% static 'css/fontawesome.min.css' %}" rel="stylesheet"> {% endcomment %}
+  
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/fontawesome.js' %}"></script>
+  {% comment %} <script src="https://kit.fontawesome.com/0237759ee5.js" crossorigin="anonymous"></script> {% endcomment %}
+  {%comment%}
+  <script src="{% static 'js/js.cookie.min.js' %}"></script>
+  {%endcomment %}
+  {% block meta-css %}{% endblock %}
 </head>
 
-<body>
-    <div id="wrapper">
-        <nav class="navbar navbar-dark bg-dark mb-5">
-            <div class="container">
-                <a href="" class="navbar-brand">Django HTMx Fun</a>
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'shopee:ad_data' %}">Table</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
 
-        <div class="container">
-            {% block main %}{% endblock %}
-        </div>
+<body class="d-flex flex-column h-100"  >
+  <a href="#AC" class="visually-hidden-focusable">跳到主要內容</a>
+  <!-- 【頁首】含主導覽列 -->
+  <a accesskey="U" href="#U" id="AU" name="U" title="上方導覽列區塊" class="visually-hidden-focusable">:::</a>
+  <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+    <div class="container-fluid">
+      {% comment %} {% if 'school' in request.session %} {% endcomment %}
+      
+      <a class="navbar-brand" href="">
+        {% comment %} {% else %} {% endcomment %}
+        {% comment %} <a class="navbar-brand" href=""> {% endcomment %}
+          {% comment %} {% endif %} {% endcomment %}
+        <i class="fa-solid fa-shop" style="color:white"></i>
+        {% comment %} <img src="{% static 'img/logo.svg' %}" width="220" alt="LOGO圖，點擊回首頁" class="d-inline d-sm-none">
+        <img src="{% static 'img/logo.svg' %}" width="300" alt="LOGO圖，點擊回首頁" class="d-none d-sm-inline d-xxl-none">
+        <img src="{% static 'img/logo.svg' %}" width="380" alt="LOGO圖，點擊回首頁" class="d-none d-xxl-inline"> {% endcomment %}
+        <h1 class="visually-hidden-focusable">學術論文原創性自我檢測系統</h1>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            {% comment %}
+          {% if request.user.is_authenticated %}
+          {% if request.user.is_active %}
+          {% endcomment %}
+          <li class="nav-item analysis-btn">
+            <a class="nav-link header {% block nav_upload %}{% endblock %}" href="">{% trans "Ad Data" %}</a>
+          </li>
+          <li class="nav-item myresult-btn ">
+            <a class="nav-link header {% block nav_myresult %}{% endblock %}" href="">{% trans "Meta Data" %}</a>
+            </li>
+          
+            <li class="nav-item useractivation-btn ">
+            <a class="nav-link header {% block nav_useractivation %}{% endblock %}" href="">{% trans "Cal Data" %}</a>
+            </li>
+     
+      
+        </ul>
+
+        
+      </div>
     </div>
+  </nav>
+  {{ form.media }}
+  <!-- 使用手冊modal -->
+
+  <!-- /【頁首】含主導覽列 -->
+  {% block main-content %}{% endblock %}
+
+  <!-- 【頁尾】 -->
+  <footer class="footer mt-auto py-3">
+    <div class="container-xxl">
+      <div class="row d-flex justify-content-center align-items-lg-start align-items-center">
+        <div class="col-lg-6 align-self-center text-center text-lg-end">
+          <img src="{% static 'img/logo-com.svg' %}" height="" width="200" alt="飛資得系統科技股份有限公司LOGO">
+        </div>
+        <div class="col-lg-6 align-self-center text-center text-lg-start">
+          <span class="text-muted">Photo by Alexander Kovalev</span>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+  <!-- /【頁尾】 -->
+  <noscript>
+    Your browser does not support JavaScript function. If the webpage function cannot be used normally, please turn on
+    the browser JavaScript status.
+    您的瀏覽器不支援 JavaScript 或關閉 JavaScript ，請在網站設定中開啟 JavaScript 選項。
+  </noscript>
+
 </body>
+
+</html>

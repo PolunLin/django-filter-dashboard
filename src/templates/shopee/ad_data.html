@@ -1,12 +1,54 @@
-
-{% extends "shopee/base.html" %}
-
-{% block main-content %}
-    <form method="get">
-        {{ filter.form.as_p }}
-        <input type="submit" />
-    </form>
-    {% for obj in filter.qs %}
-        {{ obj.keyword }} - ${{ obj.status }} {{ obj.mode }}<br />
-    {% endfor %}
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% block meta-css %}
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
 {% endblock %}
+{% block main-content %}
+
+  <!-- /【頁首】含主導覽列 -->
+  <a accesskey="C" href="C" id="AC" name="C" title="中央內容區塊" class="visually-hidden-focusable">:::</a>
+  <!-- 【內容】主要內容區塊 -->
+  <main class="flex-shrink-0">
+    <form>
+        
+        <div class="my-3 g-3 row justify-content-center " >
+            {%for field in form %}
+            <div class="mb-2 row">
+                {{field}}
+            </div>
+            {%endfor%}
+    </div>
+    </form>
+        <table class="table table-light table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">First</th>
+                <th scope="col">Last</th>
+                <th scope="col">Handle</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td colspan="2">Larry the Bird</td>
+                <td>@twitter</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main> 
+{% endblock main-content %}
