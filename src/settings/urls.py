@@ -26,6 +26,7 @@ urlpatterns = [
    
     path("admin/", admin.site.urls),
     path("", include(shopee_urls,'shopee')),
+    # path(r'autocomplete/', include('autocomplete_light.urls')),
 
 ]
 

@@ -32,6 +32,8 @@ ALLOWED_HOSTS = ["127.0.0.1", "99f295ce5677.ngrok.io"]
 # Application definition
 
 INSTALLED_APPS = [
+    'dal',
+    'dal_select2',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -40,13 +42,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     "rest_framework",
-
-    "django_tables2",
-    "django_filters",
-    "django_htmx",
-    "crispy_forms",
-    "crispy_bootstrap5",
     'shopee',
+    # 'autocomplete_light'
 ]
 
 MIDDLEWARE = [
@@ -179,7 +176,3 @@ ADMIN_URLS = r"backend/(.*)$"
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# Crispy form
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"
