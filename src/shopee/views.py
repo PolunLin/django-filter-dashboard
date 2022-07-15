@@ -1,3 +1,4 @@
+from ast import Add
 from importlib.metadata import metadata
 from . import models
 from django.shortcuts import render
@@ -335,31 +336,43 @@ def Import_csv(request):
         print("error",identifier)
      
     return render(request, 'shopee/importexcel.html',{})
-from .filters import AdDataFitler
-def product_list(request):
-    f = AdDataFitler(request.GET, queryset=models.AdData.objects.all())
-    return render(request, 'ad_data.html', {'filter': f})
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.views import View
+from .forms import AdForm
+class AdView(View):
+    form_class = AdForm
+    # initial = {'key': 'value'}
+    template_name = 'shopee/ad_data.html'
 
-from .tables import AdDataHTMxTable,AdDataTable,MetaDataHTMxTable,MetaDataTable,CalDataHTMxTable,CalDataTable
-from shopee.models import AdData
-from django_tables2 import SingleTableView, SingleTableMixin
-from django_filters.views import FilterView
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        data = AdData.objects.all()
+        return render(request, self.template_name, {'form': form,'data':data})
 
-class AdDataTableView(SingleTableView):
-    table_class = AdDataTable
-    queryset = models.AdData.objects.all()
-    template_name = "shopee/table.html"
-    paginate_by = 10
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            # <process form cleaned data>
+            return HttpResponseRedirect('/success/')
 
-class AdDataHTMxTableView(SingleTableMixin, FilterView):
-    table_class = AdDataHTMxTable
-    queryset = models.AdData.objects.all()
-    filterset_class = AdDataFitler
-    paginate_by = 10
-    def get_template_names(self):
-        if self.request.htmx:
-            template_name = "shopee/table_partial.html"
-        else:
-            template_name = "shopee/table_htmx.html"
-        print(template_name)
-        return template_name
+        return render(request, self.template_name, {'form': form})
+from dal import autocomplete
+class AdDataAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        # if not self.request.user.is_authenticated:
+        #     return AdData.objects.none()
+
+        qs = AdData.objects.all()
+        # print(self.forwarded['self'])
+        mode = self.forwarded.get('mode', None)
+        keyword = self.forwarded.get('keyword', None)
+        if mode:
+            qs = qs.values_list('mode',flat=True)
+        if keyword:
+            qs = qs.values_list('keyword',flat=True)
+        # if self.q:
+        #     qs = qs.filter(keyword__istartswith=self.q)
+
+        return qs
