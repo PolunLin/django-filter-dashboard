@@ -35,5 +35,5 @@ class AdData(models.Model):
         
         # ordering = ['order']
 
-    # def __str__(self):
-    #     return u"%s" % (self.title)
+    def __str__(self):
+        return u"%s" % (self.keyword)
