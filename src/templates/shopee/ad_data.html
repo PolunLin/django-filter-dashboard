@@ -19,7 +19,6 @@
                 {{field}}
             </div>
             {%endfor%}
-            <input type="submit">
     </div>
     </form>
     <div class="my-3 mx-3 g-3 row justify-content-center " style='width:100%'>
@@ -59,9 +58,6 @@
             </table>
         </div>
         <div id="toolbar">
-            {% comment %} <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="newNews()">新增資料</a> {% endcomment %}
-            {% comment %} <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editNews()">編輯資料</a> {% endcomment %}
-            {% comment %} <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="destroyNews()">移除資料</a> {% endcomment %}
         </div>
         <div id="dlg" class="easyui-dialog" style="width:400px"
             closed="true" buttons="#dlg-buttons">
@@ -146,7 +142,6 @@
 
     </div>
     <div data-options="region:'center',title:'廣告資料'" style="padding:5px;background:#eee;">
-        {% comment %} <table id="dg"><table> {% endcomment %}
 </main> 
 {% block filejs %}
 <script>
@@ -160,82 +155,15 @@
             trigger: 'none',
         }]);
     });
-    //显示编辑框
-    {% comment %} function newNews(){
-    $('#dlg').dialog('open').dialog('center').dialog('setTitle','新增廣告資料');
-    $('#fm').form('clear');
-    url = '{% url 'shopee:start'%}';
-    } {% endcomment %}
-    //编辑新闻
-    {% comment %} function editNews(){
-    var row = $('#dg').datagrid('getSelected');
-    console.log(row);
-    if (row){
-        $('#dlg').dialog('open').dialog('center').dialog('setTitle','Edit News');
-        $('#fm').form('load',row);
-        //  ajax 编辑News 并且 通过ajax 保存到后端 SQL
-        url = '{% url 'shopee:edit' id=1 %}';
-    }
-    }
-    // 保存新闻
-    function saveNews(){
-    $('#fm').form('submit',{
-        url: url,
-        onSubmit: function(){
-            return $(this).form('validate');
-        },
-        success: function(result){
-            if (result=="save"){
-               $('#dlg').dialog('close');
-                $('#dg').datagrid('reload');
-            }else
-            if (result.errorMsg){
-                $.messager.show({
-                    title: 'Error',
-                    msg: result.errorMsg
-                });
-            } else {
-                $('#dlg').dialog('close');        // close the dialog
-                $('#dg').datagrid('reload');    // reload the News data
-            }
-        }
-    });
-    }
 
-
-    //删除新闻
-    function destroyNews(){
-    var row = $('#dg').datagrid('getSelected');
-    console.log(row);
-    if (row){
-        $.messager.confirm('再次确认','你确定要删除这条新闻？',function(r){
-            if (r){
-                $.ajax({
-                    url: '{% url 'shopee:remove'%}',
-                    type: 'POST',
-                    data: {'id':row.news_id},
-                    success: function(data) {
-                        if (data=="REMOVE"){
-                            $('#dg').datagrid('reload');
-                        }
-                    },
-                    error: function(data) {alert("error")}
-                });
-            }
-        });
-    }
-    } {% endcomment %}
     $(".easyui-combobox").each(function(index,value){
         $(this).combobox({
             onChange: function(row){
-                var target = this;
-                
                 var keyword =  $('#keyword').combobox('getText')
                 var mode =  $('#mode').combobox('getText')
                 var search_request =  $('#search_request').combobox('getText')
                 var status =  $('#status').combobox('getText')
                 var meta_data =  $('#meta_data').combobox('getText')
-                
                 
                 item_obj = {
                     keyword: $('#keyword').combobox('getText'),
@@ -274,10 +202,6 @@
                 
             }
         })
-           
-                    
-                    
-                       
                    });  
     
     
