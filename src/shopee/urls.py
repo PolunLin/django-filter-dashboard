@@ -10,12 +10,19 @@ urlpatterns = [
     # path('export_users_csv/', views.export_users_csv,name="export_users_csv"),  
     path('Import_csv/', views.Import_csv,name="Import_csv"),  
     path('ad_data/', views.AdView.as_view(),name="ad_data"),  
-    path(
-        r'^addata-autocomplete/$',
-        views.AdDataAutocomplete.as_view(),
-        name='addata-autocomplete',
-    ),
+    path('get_data/', views.get_data,name="get_data"),  
+    # path(r'start/', views.app_start,name="start"),
+
+    # path('edit/<int:id>/', views.Edit_NewsName,name="edit"),
+    # path(r'remove/', views.Remove_News_ID,name="remove"),
 ]
+
+    # path(
+    #     r'addata-autocomplete',
+    #     views.AdDataAutocomplete.as_view(),
+    #     name='addata-autocomplete',
+    # ),
+
 
 if settings.DEBUG: 
     urlpatterns += static(

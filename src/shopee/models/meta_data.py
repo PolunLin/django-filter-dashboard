@@ -26,3 +26,5 @@ class MetaData(models.Model): # 件
                 fields=['product', 'store_id', 'product_id', 'date_1', 'date_2', 'status'], name='unique_migration_host_combination'
             )
         ]
+    def __str__(self):
+        return f"{self.date_1}-{self.date_2} {self.product} {self.store_id} {self.product_id} "

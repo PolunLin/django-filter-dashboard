@@ -1,5 +1,7 @@
-from ast import Add
+from ast import Add, keyword
 from importlib.metadata import metadata
+
+from cv2 import ROTATE_90_CLOCKWISE
 from . import models
 from django.shortcuts import render
 
@@ -336,7 +338,7 @@ def Import_csv(request):
         print("error",identifier)
      
     return render(request, 'shopee/importexcel.html',{})
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
 from .forms import AdForm
@@ -347,32 +349,187 @@ class AdView(View):
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
+        form = AdForm
         data = AdData.objects.all()
         return render(request, self.template_name, {'form': form,'data':data})
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        if form.is_valid():
-            # <process form cleaned data>
-            return HttpResponseRedirect('/success/')
-
-        return render(request, self.template_name, {'form': form})
+import json
+from django.core.paginator import  Paginator
+# @csrf_exempt
+def get_data(request):
+    sort=request.POST.get('sort','keyword')
+    order=request.POST.get('order','asc')
+    page=request.POST.get('page',1)
+    rows=request.POST.get('rows',15)
+    
+    keyword=request.POST.get('keyword','')
+    status=request.POST.get('status','')
+    mode=request.POST.get('mode','')
+    search_request=request.POST.get('search_request','')
+    print(keyword,mode,status,search_request)
+    data_list = []
+    data = AdData.objects.all()
+    if keyword:
+        data = data.filter(keyword=keyword)
+    if status:
+        data = data.filter(status=status)
+    if mode:
+        data = data.filter(mode=mode)
+    if search_request:
+        data = data.filter(search_request=search_request)
+    if order!='asc':
+        sort='-'+sort
+    data = data.order_by(sort)
+    paginator=Paginator(data,rows)
+    pages=paginator.get_page(page)
+    for li in pages:
+        data_list.append({
+            "keyword":li.keyword,
+            "status":li.status,
+            "mode":li.mode,
+            "search_request":li.search_request,
+            "view":li.view,
+            "click":li.click,
+            "click_rate":li.click_rate,
+            "transfer":li.transfer,
+            "dtransfer":li.dtransfer,
+            "transfer_rate":li.transfer_rate,
+            "dtransfer_rate":li.dtransfer_rate,
+            "cost_transfer":li.cost_transfer,
+            "cost_dtransfer":li.cost_dtransfer,
+            "sold_number":li.sold_number,
+            "dsold_number":li.dsold_number,
+            "sold_cost":li.sold_cost,
+            "sold_dcost":li.sold_dcost,
+            "cost":li.cost,
+            "avg_rank":li.avg_rank,
+            "invent_rate":li.invent_rate,
+            "dinvent_rate":li.dinvent_rate,
+            "cost_revenue_rate":li.cost_revenue_rate,
+            "dcost_revenue_rate":li.dcost_revenue_rate}
+        )
+    json_list = json.dumps(len(data_list))
+    
+    # print(data_list)
+    # print(paginator.count)
+    json_data_list = {'rows':data_list,'total':paginator.count}
+    return HttpResponse(json.dumps(json_data_list))
+    
 from dal import autocomplete
-class AdDataAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        # Don't forget to filter out results depending on the visitor !
-        # if not self.request.user.is_authenticated:
-        #     return AdData.objects.none()
+# class AdDataAutocomplete(autocomplete.Select2QuerySetView):
+#     # def get_mode(self,item):
+#     #     return item.mode
+#     # def get_keyword(self,item):
+#         # return item.keyword
+#     def get_queryset(self):
+  
+#         qs = AdData.objects.all()
+        
+#         mode = self.forwarded.get('mode_field', None)
+#         keyword = self.forwarded.get('keyword_field', None)
+#         print(mode,keyword)
+#         if mode:
+#             qs = qs.filter(mode=mode)
+#         if keyword:
+#             qs = qs.filter(keyword=keyword)
+#         # if self.q:
+#         #     qs = qs.filter(keyword__istartswith=self.q)
 
-        qs = AdData.objects.all()
-        # print(self.forwarded['self'])
-        mode = self.forwarded.get('mode', None)
-        keyword = self.forwarded.get('keyword', None)
-        if mode:
-            qs = qs.values_list('mode',flat=True)
-        if keyword:
-            qs = qs.values_list('keyword',flat=True)
-        # if self.q:
-        #     qs = qs.filter(keyword__istartswith=self.q)
+#         return qs
+# def Edit_NewsName(request, id):
+#     print("这是编辑的："+id)
+#     print(request.method)
+#     # 从前端获取到输入的数据
+#     # POST.get('xxx')这个中的字段是前端表格的<th field="news_title" width="50">新闻标题</th>中的field一致
+#     if request.method == 'POST':
+#         keyword = request.POST.get('keyword')
+#         status = request.POST.get('status')
+#         mode = request.POST.get('mode')
+#         search_request = request.POST.get('search_request')
+#         view = request.POST.get('view')
+#         click = request.POST.get('click')
+#         click_rate = request.POST.get('click_rate')
+#         transfer = request.POST.get('transfer')
+#         dtransfer = request.POST.get('dtransfer')
+#         transfer_rate = request.POST.get('transfer_rate')
+#         dtransfer_rate = request.POST.get('dtransfer_rate')
+#         cost_transfer = request.POST.get('cost_transfer')
+#         cost_dtransfer = request.POST.get('cost_dtransfer')
+#         sold_number = request.POST.get('sold_number')
+#         dsold_number = request.POST.get('dsold_number')
+#         sold_cost = request.POST.get('sold_cost')
+#         sold_dcost = request.POST.get('sold_dcost')
+#         cost = request.POST.get('cost')
+#         avg_rank = request.POST.get('avg_rank')
+#         invent_rate = request.POST.get('invent_rate')
+#         dinvent_rate = request.POST.get('dinvent_rate')
+#         cost_revenue_rate = request.POST.get('cost_revenue_rate')
+#         dcost_revenue_rate = request.POST.get('dcost_revenue_rate')
+#         dic = {
+#                 "keyword":keyword,
+#                 "status":status,
+#                 "mode":mode,
+#                 "search_request":search_request,
+#                 "view":view,
+#                 "click":click,
+#                 "click_rate":click_rate,
+#                 "transfer":transfer,
+#                 "dtransfer":dtransfer,
+#                 "transfer_rate":transfer_rate,
+#                 "dtransfer_rate":dtransfer_rate,
+#                 "cost_transfer":cost_transfer,
+#                 "cost_dtransfer":cost_dtransfer,
+#                 "sold_number":sold_number,
+#                 "dsold_number":dsold_number,
+#                 "sold_cost":sold_cost,
+#                 "sold_dcost":sold_dcost,
+#                 "cost":cost,
+#                 "avg_rank":avg_rank,
+#                 "invent_rate":invent_rate,
+#                 "dinvent_rate":dinvent_rate,
+#                 "cost_revenue_rate":cost_revenue_rate,
+#                 "dcost_revenue_rate":dcost_revenue_rate
+#                };
+#         print(dic)
+#         models.News.objects.filter(id=id).update(**dic)
+#         return HttpResponse("Edit_OK")
 
-        return qs
+# # 增加数据与start_app
+# def app_start(request):
+#     # add_save_News
+#     if request.method == "POST":
+#         print("POST")
+#         print(request.POST)
+#         title = request.POST.get('news_title')
+#         date = request.POST.get('news_date')
+#         detail_time = request.POST.get('news_detail_time')
+#         content = request.POST.get('news_content')
+#         url = request.POST.get('news_url')
+#         source = request.POST.get('news_source')
+#         web = request.POST.get('news_web')
+#         logtime = request.POST.get('news_logtime')
+#         # 构造字典并转成json，这里的键需要与数据库的字段一致
+#         dic = {
+#                 "title": title,
+#                 "date": date,
+#                 "detail_time": detail_time,
+#                 "content": content,
+#                 "url": url,
+#                 "source": source,
+#                 "web": web,
+#                 "logtime": logtime,
+#                };
+#         models.News.objects.create(**dic)
+#         return HttpResponse("save")
+#     else:
+#         print(" is null_!")
+#     return render(request, 'info.html')
+
+# # 移除数据
+# def Remove_News_ID(request):
+#     if request.method == "POST":
+#         print("REMOVE POST")
+#         id = request.POST.get('id')
+#         print(id)
+#         models.News.objects.filter(id=id).delete()
+#     return HttpResponse("REMOVE")
+
