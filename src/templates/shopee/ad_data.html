@@ -243,7 +243,6 @@
                     search_request: $('#search_request').combobox('getText'),
                     status: $('#status').combobox('getText'),
                     meta_data: $('#meta_data').combobox('getText'),
-
                 }
                 for (const key in item_obj) {
                     if (item_obj[key] =='---------'){
@@ -251,8 +250,27 @@
                     }
                     
                 }
-                    console.log(item_obj)
-                $('#dg').datagrid('load',item_obj );
+              
+                $('#dg').datagrid({
+                    loader: function(param, success, error){
+                        var opts = $(this).datagrid('options');
+                        if (!opts.url) return false;
+                        $.ajax({
+                            type: opts.method,
+                            url: opts.url,
+                            data: item_obj,
+                            dataType: 'json',
+                            success: function(data){
+                                console.log(data)
+                                success(data);
+                            },
+                            error: function(){
+                                error.apply(this, arguments);
+                            }
+                        });
+                    }
+                })
+           
                 
             }
         })
