@@ -27,4 +27,4 @@ class MetaData(models.Model): # 件
             )
         ]
     def __str__(self):
-        return f"{self.date_1}-{self.date_2} {self.product} {self.store_id} {self.product_id} "
+        return f"{self.id} {self.date_1}-{self.date_2} {self.product} {self.store_id} {self.product_id} "
