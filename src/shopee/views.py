@@ -365,7 +365,9 @@ def get_data(request):
     status=request.POST.get('status','')
     mode=request.POST.get('mode','')
     search_request=request.POST.get('search_request','')
-    print(keyword,mode,status,search_request)
+    meta_data=request.POST.get('meta_data','')
+
+    # print(keyword,mode,status,search_request)
     data_list = []
     data = AdData.objects.all()
     if keyword:
@@ -376,6 +378,9 @@ def get_data(request):
         data = data.filter(mode=mode)
     if search_request:
         data = data.filter(search_request=search_request)
+    if meta_data:
+        meta_data = meta_data.split(" ")[0]
+        data = data.filter(meta_data=meta_data)
     if order!='asc':
         sort='-'+sort
     data = data.order_by(sort)
