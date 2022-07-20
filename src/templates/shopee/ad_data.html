@@ -12,7 +12,7 @@
   <main class="flex-shrink-0">
     <form>
         
-        <div class="my-3 mx-3 g-3 row justify-content-center " >
+        <div class="my-3 mx-3 g-4 row justify-content-center " >
             {%for field in form %}
             <div class="mb-2 col">
                 {{ field.label_tag }}
@@ -59,86 +59,7 @@
         </div>
         <div id="toolbar">
         </div>
-        <div id="dlg" class="easyui-dialog" style="width:400px"
-            closed="true" buttons="#dlg-buttons">
-        <form id="fm" method="post" novalidate style="margin:0;padding:20px 50px">
-            <div style="margin-bottom:20px;font-size:20px;border-bottom:1px solid #ccc">廣告資料</div>
-            <div style="margin-bottom:10px">
-                <input name="keyword" class="easyui-textbox" required="true" label="關鍵字" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="status" class="easyui-textbox" required="true" label="狀態" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="mode" class="easyui-textbox" required="true" label="比對模式" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="search_request" class="easyui-textbox" required="true" label="搜尋请求" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="view" class="easyui-textbox" required="true" label="瀏覽數" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="click" class="easyui-textbox" required="true" label="點擊數" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="click_rate" class="easyui-textbox" required="true" label="點擊率" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="transfer" class="easyui-textbox" required="true" label="轉換" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="dtransfer" class="easyui-textbox" required="true" label="直接轉換" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="transfer_rate" class="easyui-textbox" required="true" label="轉換率" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="dtransfer_rate" class="easyui-textbox" required="true" label="直接轉換率" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="cost_transfer" class="easyui-textbox" required="true" label="每一筆轉換的成本" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="cost_dtransfer" class="easyui-textbox" required="true" label="每一筆轉換的成本" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="sold_number" class="easyui-textbox" required="true" label="銷售數" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="dsold_number" class="easyui-textbox" required="true" label="直接銷售數" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="sold_cost" class="easyui-textbox" required="true" label="銷售金額" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="sold_dcost" class="easyui-textbox" required="true" label="直接銷售金額" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="cost" class="easyui-textbox" required="true" label="花費" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="avg_rank" class="easyui-textbox" required="true" label="平均排名" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="invent_rate" class="easyui-textbox" required="true" label="投資產出比" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="dinvent_rate" class="easyui-textbox" required="true" label="直接投資產出比" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="cost_revenue_rate" class="easyui-textbox" required="true" label="成本收入比率" style="width:100%">
-            </div>
-            <div style="margin-bottom:10px">
-                <input name="dcost_revenue_rate" class="easyui-textbox" required="true" label="直接成本收入比率" style="width:100%">
-            </div>
-                
-        </form>
-    </div>
-    <div id="dlg-buttons">
-        <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveNews()" style="width:90px ">保存</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px" >取消</a>
-    </div>
+
 
     </div>
     <div data-options="region:'center',title:'廣告資料'" style="padding:5px;background:#eee;">
@@ -156,21 +77,28 @@
         }]);
     });
 
-    $(".easyui-combobox").each(function(index,value){
-        $(this).combobox({
-            onChange: function(row){
+   function filter_table (row){
                 var keyword =  $('#keyword').combobox('getText')
                 var mode =  $('#mode').combobox('getText')
                 var search_request =  $('#search_request').combobox('getText')
                 var status =  $('#status').combobox('getText')
-                var meta_data =  $('#meta_data').combobox('getText')
+                var product =  $('#product').combobox('getText')
+                var store_id =  $('#store_id').combobox('getText')
+                var product_id =  $('#product_id').combobox('getText')
+                {% comment %} var pstatus =  $('#pstatus').combobox('getText') {% endcomment %}
+                var date_1 = $('#date_1').datebox('getValue');
+                var date_2 = $('#date_2').datebox('getValue');
                 
                 item_obj = {
                     keyword: $('#keyword').combobox('getText'),
                     mode: $('#mode').combobox('getText'),
                     search_request: $('#search_request').combobox('getText'),
                     status: $('#status').combobox('getText'),
-                    meta_data: $('#meta_data').combobox('getText'),
+                    product: $('#product').combobox('getText'),
+                    product_id: $('#product_id').combobox('getText'),
+                    {% comment %} pstatus: $('#pstatus').combobox('getText'), {% endcomment %}
+                    date_1: $('#date_1').datebox('getValue'),
+                    date_2: $('#date_2').datebox('getValue'),
                 }
                 for (const key in item_obj) {
                     if (item_obj[key] =='---------'){
@@ -201,8 +129,16 @@
            
                 
             }
+            $(".easyui-combobox").each(function(index,value){
+                $(this).combobox({
+                    onChange: filter_table
         })
-                   });  
+                   }); 
+            $(".easyui-datebox").each(function (index,value){
+            $(this).datebox({
+                onChange: filter_table
+            })
+                        }) 
     
     
     </script>

@@ -341,7 +341,7 @@ def Import_csv(request):
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
-from .forms import AdDataForm, MetaDataForm#CalDataForm
+from .forms import AdDataForm, MetaDataForm,CalDataForm
 class AdDataView(View):
     form_class = AdDataForm
     # initial = {'key': 'value'}
@@ -363,15 +363,15 @@ class MetaDataView(View):
         data = MetaData.objects.all()
         return render(request, self.template_name, {'form': form,'data':data})
 class CalDataView(View):
-    # form_class = CalDataForm
+    form_class = CalDataForm
     # initial = {'key': 'value'}
     template_name = 'shopee/cal_data.html'
 
     def get(self, request, *args, **kwargs):
-        # form = self.form_class()
-        # form = CalDataForm
+        form = self.form_class()
+        form = CalDataForm
         data = CalData.objects.all()
-        return render(request, self.template_name, {'data':data})
+        return render(request, self.template_name, {'form': form,'data':data})
 import json
 from django.core.paginator import  Paginator
 from django.forms.models import model_to_dict
@@ -386,8 +386,12 @@ def get_data(request):
     status=request.POST.get('status','')
     mode=request.POST.get('mode','')
     search_request=request.POST.get('search_request','')
-    meta_data=request.POST.get('meta_data','')
-
+    product=request.POST.get('product','')
+    store_id=request.POST.get('store_id','')
+    product_id=request.POST.get('product_id','')
+    date_1=request.POST.get('date_1','')
+    date_2=request.POST.get('date_2','')
+    
     # print(keyword,mode,status,search_request)
     data_list = []
     data = AdData.objects.all()
@@ -399,9 +403,20 @@ def get_data(request):
         data = data.filter(mode=mode)
     if search_request:
         data = data.filter(search_request=search_request)
-    if meta_data:
-        meta_data = meta_data.split(" ")[0]
-        data = data.filter(meta_data=meta_data)
+
+    if product:
+        data = data.filter(meta_data__product=product)
+    if store_id:
+        data = data.filter(meta_data__store_id=store_id)
+    if product_id:
+        data = data.filter(meta_data__product_id=product_id)
+
+    if date_1:
+        date_1 = datetime.strptime(date_1,"%m/%d/%Y")
+        data = data.filter(meta_data__date_1__gte=date_1)
+    if date_2:
+        date_2 = datetime.strptime(date_2,"%m/%d/%Y")
+        data = data.filter(meta_data__date_2__lte=date_2)
     if order!='asc':
         sort='-'+sort
     data = data.order_by(sort)
@@ -458,19 +473,19 @@ def get_meta_data(request):
     data_list = []
     data = MetaData.objects.all()
     if product:
-        data = data.filter(keyword=product)
+        data = data.filter(product=product)
     if store_id:
-        data = data.filter(status=store_id)
+        data = data.filter(store_id=store_id)
     if product_id:
-        data = data.filter(mode=product_id)
+        data = data.filter(product_id=product_id)
     if status:
-        data = data.filter(mode=status)
+        data = data.filter(status=status)
     if date_1:
         date_1 = datetime.strptime(date_1,"%m/%d/%Y")
         data = data.filter(date_1__gte=date_1)
     if date_2:
         date_2 = datetime.strptime(date_2,"%m/%d/%Y")
-        data = data.filter(date_1__gte=date_2)
+        data = data.filter(date_2__lte=date_2)
     # if search_request:
     #     data = data.filter(search_request=search_request)
     # if meta_data:
