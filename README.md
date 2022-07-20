@@ -20,3 +20,4 @@ python manage.py migrate
 python manage.py runserver
 ```
 ## Reference
+1. https://www.jeasyui.com/index.php
