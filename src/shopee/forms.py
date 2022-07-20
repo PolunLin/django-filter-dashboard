@@ -4,9 +4,9 @@ from .models import AdData,MetaData
 from dal import autocomplete
 
 
-class AdForm(forms.ModelForm):
+class AdDataForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(AdForm, self).__init__(*args, **kwargs)
+        super(AdDataForm, self).__init__(*args, **kwargs)
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'easyui-combobox'
             visible.field.widget.attrs['name'] = visible.field.label
@@ -22,4 +22,26 @@ class AdForm(forms.ModelForm):
     class Meta:
         model = AdData
         fields =["keyword","status","mode","search_request","meta_data"]
-       
+
+class MetaDataForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(MetaDataForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'easyui-combobox'
+            visible.field.widget.attrs['name'] = visible.field.label
+            visible.field.widget.attrs['style'] = 'width:140ch'
+        for field,value in self.fields.items():
+            self.fields[field].widget.attrs['id']=field
+            self.fields[field].widget.attrs['name']=field
+        self.fields['date_1'].widget.attrs['class'] = 'easyui-datebox'
+        self.fields['date_2'].widget.attrs['class'] = 'easyui-datebox'
+    product = forms.ModelChoiceField(label='關鍵字',queryset= MetaData.objects.values_list('product',flat=True).distinct())
+    store_id = forms.ModelChoiceField(label='賣場ID',queryset= MetaData.objects.values_list('store_id',flat=True).distinct())
+    product_id = forms.ModelChoiceField(label='商品ID',queryset= MetaData.objects.values_list('product_id',flat=True).distinct())
+    date_1 = forms.DateField(label='期間1')
+    date_2 = forms.DateField(label='期間2')
+    status = forms.ModelChoiceField(label='狀態',queryset= MetaData.objects.values_list('status',flat=True).distinct())
+
+    class Meta:
+        model = MetaData
+        fields =["product","store_id","product_id","date_1","date_2","status"]      

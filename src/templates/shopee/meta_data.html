@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% block meta-css %}
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+{% endblock %}
+{% block main-content %}
+
+  <!-- /【頁首】含主導覽列 -->
+  <a accesskey="C" href="C" id="AC" name="C" title="中央內容區塊" class="visually-hidden-focusable">:::</a>
+  <!-- 【內容】主要內容區塊 -->
+  <main class="flex-shrink-0">
+    <form>
+        
+        <div class="my-3 mx-3 g-3 row justify-content-center " >
+            {%for field in form %}
+            <div class="mb-2 col">
+                {{ field.label_tag }}
+                {{field}}
+            </div>
+            {%endfor%}
+    </div>
+    </form>
+    <div class="my-3 mx-3 g-3 row justify-content-center " style='width:100%'>
+        <table id="dg" title="詮釋資料" class="easyui-datagrid" style="width:100%;height:600px;"
+        url="{% url 'shopee:get_meta_data' %}" data-options="pageSize:15"
+        toolbar="#toolbar" pagination="true"
+        rownumbers="true" fitColumns="true" singleSelect="true" ,
+        pageList='[5,10,15,20,50]',rownumbers:true>
+    <thead>
+        <tr>
+            <th field="product" width="50" sortable="true">關鍵字</th>
+            <th field="store_id" width="50" sortable="true">賣場ID</th>
+            <th field="product_id" width="50" sortable="true">商品ID</th>
+            <th field="date_1" width="50" sortable="true">期間1</th>
+            <th field="date_2" width="50" sortable="true">期間2</th>
+            <th field="status" width="50" sortable="true">狀態</th>
+            </tr>
+            </thead>
+ 
+            </table>
+        </div>
+        <div id="toolbar">
+        </div>
+        <div id="dlg" class="easyui-dialog" style="width:400px"
+            closed="true" buttons="#dlg-buttons">
+        <form id="fm" method="post" novalidate style="margin:0;padding:20px 50px">
+            <div style="margin-bottom:20px;font-size:20px;border-bottom:1px solid #ccc">詮釋資料</div>
+            <div style="margin-bottom:10px">
+                <input name="keyword" class="easyui-textbox" required="true" label="關鍵字" style="width:100%">
+            </div>
+            <div style="margin-bottom:10px">
+                <input name="store_id" class="easyui-textbox" required="true" label="賣場ID" style="width:100%">
+            </div>
+            <div style="margin-bottom:10px">
+                <input name="product_id" class="easyui-textbox" required="true" label="商品ID" style="width:100%">
+            </div>
+            <div style="margin-bottom:10px">
+                <input id = 'd1' name="date_1" class="easyui-textbox" required="true" label="期間1" style="width:100%" >
+            </div>
+            <div style="margin-bottom:10px">
+                <input name="date_2" class="easyui-textbox" required="true" label="期間2" style="width:100%" validType="greaterThan['#d1']">
+            </div>
+            <div style="margin-bottom:10px">
+                <input name="status" class="easyui-textbox" required="true" label="狀態" style="width:100%">
+            </div>
+                
+        </form>
+    </div>
+    <div id="dlg-buttons">
+        <a href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" onclick="saveNews()" style="width:90px ">保存</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')" style="width:90px" >取消</a>
+    </div>
+
+    </div>
+    <div data-options="region:'center',title:'詮釋資料'" style="padding:5px;background:#eee;">
+</main> 
+{% block filejs %}
+<script>
+    $.extend($.fn.validatebox.defaults.rules, {
+        greaterThan:{
+            validator: function(value,param){
+                var v1 = $(param[0]).datebox('getValue');
+                var d1 = $.fn.datebox.defaults.parser(v1);
+                var d2 = $.fn.datebox.defaults.parser(value);
+                return d2 > d1;
+            },
+            message: 'Please select a greater date.'
+        }
+    })
+    function filter_table(row){
+        var product =  $('#product').combobox('getText')
+        var store_id =  $('#store_id').combobox('getText')
+        var product_id =  $('#product_id').combobox('getText')
+        var status =  $('#status').combobox('getText')
+        var date_1 = $('#date_1').datebox('getValue');
+        var date_2 = $('#date_2').datebox('getValue');
+        
+        item_obj = {
+            product:  $('#product').combobox('getText'),
+            store_id:$('#store_id').combobox('getText'),
+            product_id: $('#product_id').combobox('getText'),
+            status: $('#status').combobox('getText'),
+            date_1: $('#date_1').datebox('getValue'),
+            date_2: $('#date_2').datebox('getValue'),
+        }
+        for (const key in item_obj) {
+            if (item_obj[key] =='---------' ||item_obj[key] ==''){
+                delete item_obj[key]
+            }   
+        }
+        $('#dg').datagrid({
+            loader: function(param, success, error){
+                var opts = $(this).datagrid('options');
+                if (!opts.url) return false;
+                $.ajax({
+                    type: opts.method,
+                    url: opts.url,
+                    data: item_obj,
+                    dataType: 'json',
+                    success: function(data){
+                        console.log(data)
+                        success(data);
+                    },
+                    error: function(){
+                        error.apply(this, arguments);
+                    }
+                });
+            }
+        })
+   
+        
+    }
+    $(".easyui-combobox").each(function (index,value){
+        $(this).combobox({
+            onChange: filter_table
+        })
+                   })
+    $(".easyui-datebox").each(function (index,value){
+        $(this).datebox({
+            onChange: filter_table
+        })
+                   })
+    
+    
+    </script>
+{% endblock filejs %}
+{% endblock main-content %}

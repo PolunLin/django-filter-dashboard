@@ -56,10 +56,10 @@
           {% if request.user.is_active %}
           {% endcomment %}
           <li class="nav-item analysis-btn">
-            <a class="nav-link header {% block nav_upload %}{% endblock %}" href="">{% trans "Ad Data" %}</a>
+            <a class="nav-link header {% block nav_upload %}{% endblock %}" href="{% url 'shopee:ad_data' %}">{% trans "Ad Data" %}</a>
           </li>
           <li class="nav-item myresult-btn ">
-            <a class="nav-link header {% block nav_myresult %}{% endblock %}" href="">{% trans "Meta Data" %}</a>
+            <a class="nav-link header {% block nav_myresult %}{% endblock %}" href="{% url 'shopee:meta_data' %}">{% trans "Meta Data" %}</a>
             </li>
           
             <li class="nav-item useractivation-btn ">

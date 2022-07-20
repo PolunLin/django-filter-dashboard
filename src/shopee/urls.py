@@ -9,8 +9,10 @@ urlpatterns = [
     path("", views.uploadFile, name = "uploadFile"),
     # path('export_users_csv/', views.export_users_csv,name="export_users_csv"),  
     path('Import_csv/', views.Import_csv,name="Import_csv"),  
-    path('ad_data/', views.AdView.as_view(),name="ad_data"),  
+    path('ad_data/', views.AdDataView.as_view(),name="ad_data"),  
+    path('meta_data/', views.MetaDataView.as_view(),name="meta_data"),  
     path('get_data/', views.get_data,name="get_data"),  
+    path('get_meta_data/', views.get_meta_data,name="get_meta_data"),  
    
 ]
 

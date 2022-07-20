@@ -341,19 +341,30 @@ def Import_csv(request):
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
-from .forms import AdForm
-class AdView(View):
-    form_class = AdForm
+from .forms import AdDataForm,MetaDataForm
+class AdDataView(View):
+    form_class = AdDataForm
     # initial = {'key': 'value'}
     template_name = 'shopee/ad_data.html'
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
-        form = AdForm
+        form = AdDataForm
         data = AdData.objects.all()
+        return render(request, self.template_name, {'form': form,'data':data})
+class MetaDataView(View):
+    form_class = MetaDataForm
+    # initial = {'key': 'value'}
+    template_name = 'shopee/meta_data.html'
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        form = MetaDataForm
+        data = MetaData.objects.all()
         return render(request, self.template_name, {'form': form,'data':data})
 import json
 from django.core.paginator import  Paginator
+from django.forms.models import model_to_dict
 # @csrf_exempt
 def get_data(request):
     sort=request.POST.get('sort','keyword')
@@ -387,35 +398,84 @@ def get_data(request):
     paginator=Paginator(data,rows)
     pages=paginator.get_page(page)
     for li in pages:
-        data_list.append({
-            "keyword":li.keyword,
-            "status":li.status,
-            "mode":li.mode,
-            "search_request":li.search_request,
-            "view":li.view,
-            "click":li.click,
-            "click_rate":li.click_rate,
-            "transfer":li.transfer,
-            "dtransfer":li.dtransfer,
-            "transfer_rate":li.transfer_rate,
-            "dtransfer_rate":li.dtransfer_rate,
-            "cost_transfer":li.cost_transfer,
-            "cost_dtransfer":li.cost_dtransfer,
-            "sold_number":li.sold_number,
-            "dsold_number":li.dsold_number,
-            "sold_cost":li.sold_cost,
-            "sold_dcost":li.sold_dcost,
-            "cost":li.cost,
-            "avg_rank":li.avg_rank,
-            "invent_rate":li.invent_rate,
-            "dinvent_rate":li.dinvent_rate,
-            "cost_revenue_rate":li.cost_revenue_rate,
-            "dcost_revenue_rate":li.dcost_revenue_rate}
-        )
+        data_list.append(model_to_dict(li))
+        # data_list.append({
+        #     "keyword":li.keyword,
+        #     "status":li.status,
+        #     "mode":li.mode,
+        #     "search_request":li.search_request,
+        #     "view":li.view,
+        #     "click":li.click,
+        #     "click_rate":li.click_rate,
+        #     "transfer":li.transfer,
+        #     "dtransfer":li.dtransfer,
+        #     "transfer_rate":li.transfer_rate,
+        #     "dtransfer_rate":li.dtransfer_rate,
+        #     "cost_transfer":li.cost_transfer,
+        #     "cost_dtransfer":li.cost_dtransfer,
+        #     "sold_number":li.sold_number,
+        #     "dsold_number":li.dsold_number,
+        #     "sold_cost":li.sold_cost,
+        #     "sold_dcost":li.sold_dcost,
+        #     "cost":li.cost,
+        #     "avg_rank":li.avg_rank,
+        #     "invent_rate":li.invent_rate,
+        #     "dinvent_rate":li.dinvent_rate,
+        #     "cost_revenue_rate":li.cost_revenue_rate,
+        #     "dcost_revenue_rate":li.dcost_revenue_rate}
+        # )
     json_list = json.dumps(len(data_list))
     
     # print(data_list)
     # print(paginator.count)
     json_data_list = {'rows':data_list,'total':paginator.count}
     return HttpResponse(json.dumps(json_data_list))
+from datetime import datetime 
+def get_meta_data(request):
+    sort=request.POST.get('sort','product')
+    order=request.POST.get('order','asc')
+    page=request.POST.get('page',1)
+    rows=request.POST.get('rows',15)
+ 
+    product=request.POST.get('product','')
+    store_id=request.POST.get('store_id','')
+    product_id=request.POST.get('t','')
+    date_1=request.POST.get('date_1','')
+    date_2=request.POST.get('date_2','')
+    status=request.POST.get('status','')
+
+    # print(product,store_id,product_id,date_1,date_2,status)
+    data_list = []
+    data = MetaData.objects.all()
+    if product:
+        data = data.filter(keyword=product)
+    if store_id:
+        data = data.filter(status=store_id)
+    if product_id:
+        data = data.filter(mode=product_id)
+    if status:
+        data = data.filter(mode=status)
+    if date_1:
+        date_1 = datetime.strptime(date_1,"%m/%d/%Y")
+        data = data.filter(date_1__gte=date_1)
+    if date_2:
+        date_2 = datetime.strptime(date_2,"%m/%d/%Y")
+        data = data.filter(date_1__gte=date_2)
+    # if search_request:
+    #     data = data.filter(search_request=search_request)
+    # if meta_data:
+    #     meta_data = meta_data.split(" ")[0]
+    #     data = data.filter(meta_data=meta_data)
+    if order!='asc':
+        sort='-'+sort
+    data = data.order_by(sort)
+    paginator=Paginator(data,rows)
+    pages=paginator.get_page(page)
+    for li in pages:
+        data_list.append(model_to_dict(li))
+    json_list = json.dumps(len(data_list))
     
+    # print(data_list)
+    # print(paginator.count)
+    json_data_list = {'rows':data_list,'total':paginator.count}
+    return HttpResponse(json.dumps(json_data_list, indent=4, sort_keys=True, default=str))
