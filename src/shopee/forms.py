@@ -46,7 +46,7 @@ class MetaDataForm(forms.ModelForm):
     product_id = forms.ModelChoiceField(label='商品ID',queryset= MetaData.objects.values_list('product_id',flat=True).distinct())
     date_1 = forms.DateField(label='期間1')
     date_2 = forms.DateField(label='期間2')
-    pstatus = forms.ModelChoiceField(label='狀態',queryset= MetaData.objects.values_list('status',flat=True).distinct())
+    status = forms.ModelChoiceField(label='狀態',queryset= MetaData.objects.values_list('status',flat=True).distinct())
 
     class Meta:
         model = MetaData
@@ -71,7 +71,7 @@ class CalDataForm(forms.ModelForm):
     product_id = forms.ModelChoiceField(label='商品ID',queryset= MetaData.objects.values_list('product_id',flat=True).distinct())
     date_1 = forms.DateField(label='期間1')
     date_2 = forms.DateField(label='期間2')
-    pstatus = forms.ModelChoiceField(label='狀態',queryset= MetaData.objects.values_list('status',flat=True).distinct())
+    # pstatus = forms.ModelChoiceField(label='狀態',queryset= MetaData.objects.values_list('status',flat=True).distinct())
     class Meta:
         model = CalData
         fields =["product","store_id","product_id","date_1","date_2"]      
