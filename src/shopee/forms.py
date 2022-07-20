@@ -60,18 +60,22 @@ class CalDataForm(forms.ModelForm):
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'easyui-combobox'
             visible.field.widget.attrs['name'] = visible.field.label
-            visible.field.widget.attrs['style'] = 'width:140ch'
+            visible.field.widget.attrs['style'] = 'width:200ch'
         for field,value in self.fields.items():
             self.fields[field].widget.attrs['id']=field
             self.fields[field].widget.attrs['name']=field
         self.fields['date_1'].widget.attrs['class'] = 'easyui-datebox'
         self.fields['date_2'].widget.attrs['class'] = 'easyui-datebox'
+        # self.fields['avg_rank'].widget.attrs['class'] = 'easyui-numberspinner'
+        self.fields['avg_rank'].widget.attrs['class'] = 'easyui-slider'
+        self.fields['avg_rank'].widget.attrs['data-options'] = "min:0,max:2500,showTip: true,range: true,value: [0,500],rule: [0,'|',625,'|',1250,'|',1875,'|',2500]"
     product = forms.ModelChoiceField(label='關鍵字',queryset= MetaData.objects.values_list('product',flat=True).distinct())
     store_id = forms.ModelChoiceField(label='賣場ID',queryset= MetaData.objects.values_list('store_id',flat=True).distinct())
     product_id = forms.ModelChoiceField(label='商品ID',queryset= MetaData.objects.values_list('product_id',flat=True).distinct())
     date_1 = forms.DateField(label='期間1')
     date_2 = forms.DateField(label='期間2')
+    avg_rank = forms.FloatField(label='平均排名')
     # pstatus = forms.ModelChoiceField(label='狀態',queryset= MetaData.objects.values_list('status',flat=True).distinct())
     class Meta:
         model = CalData
-        fields =["product","store_id","product_id","date_1","date_2"]      
+        fields =["product","store_id","product_id","date_1","date_2","avg_rank"]      

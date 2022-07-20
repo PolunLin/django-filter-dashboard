@@ -517,8 +517,8 @@ def get_cal_data(request):
     date_1=request.POST.get('date_1','')
     date_2=request.POST.get('date_2','')
     status=request.POST.get('status','')
-
-    # print(product,store_id,product_id,date_1,date_2,status)
+    avg_rank=request.POST.getlist('avg_rank[]','')
+    # print(product,store_id,avg_rank,date_1,date_2,status)
     data_list = []
     data = CalData.objects.all()
     if product:
@@ -534,6 +534,9 @@ def get_cal_data(request):
     if date_2:
         date_2 = datetime.strptime(date_2,"%m/%d/%Y")
         data = data.filter(meta_data__date_2__lte=date_2)
+    if avg_rank:
+        data = data.filter(average_rank__gte=avg_rank[0],average_rank__lte=avg_rank[1])
+        # data = data.filter(meta_data__product_id=product_id)
     # print(product,store_id,product_id,date_1,date_2,status)
 
 

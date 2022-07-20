@@ -71,7 +71,7 @@
         {% comment %} var status =  $('#pstatus').combobox('getText') {% endcomment %}
         var date_1 = $('#date_1').datebox('getValue');
         var date_2 = $('#date_2').datebox('getValue');
-        
+        var avg_rank = $('#avg_rank').slider('getValues');
         item_obj = {
             product:  $('#product').combobox('getText'),
             store_id:$('#store_id').combobox('getText'),
@@ -79,12 +79,16 @@
             {% comment %} status: $('#pstatus').combobox('getText'), {% endcomment %}
             date_1: $('#date_1').datebox('getValue'),
             date_2: $('#date_2').datebox('getValue'),
+            'avg_rank[]': $('#avg_rank').slider('getValues'),
         }
         for (const key in item_obj) {
+            
             if (item_obj[key] =='---------' ||item_obj[key] ==''){
+                
                 delete item_obj[key]
             }   
         }
+        console.log(item_obj)
         $('#dg').datagrid({
             loader: function(param, success, error){
                 var opts = $(this).datagrid('options');
@@ -117,7 +121,11 @@
             onChange: filter_table
         })
                    })
-
+    $(".easyui-slider").each(function (index,value){
+        $(this).slider({
+            onChange: filter_table
+        })
+                })               
     function cellStyler(value,row,index){
         if (value > 30){
             return 'background-color:#ffee00;color:red;';
