@@ -11,8 +11,10 @@ urlpatterns = [
     path('Import_csv/', views.Import_csv,name="Import_csv"),  
     path('ad_data/', views.AdDataView.as_view(),name="ad_data"),  
     path('meta_data/', views.MetaDataView.as_view(),name="meta_data"),  
+    path('cal_data/', views.CalDataView.as_view(),name="cal_data"),  
     path('get_data/', views.get_data,name="get_data"),  
     path('get_meta_data/', views.get_meta_data,name="get_meta_data"),  
+    path('get_cal_data/', views.get_cal_data,name="get_cal_data"),  
    
 ]
 

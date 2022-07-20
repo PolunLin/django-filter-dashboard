@@ -341,7 +341,7 @@ def Import_csv(request):
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
-from .forms import AdDataForm,MetaDataForm
+from .forms import AdDataForm, MetaDataForm#CalDataForm
 class AdDataView(View):
     form_class = AdDataForm
     # initial = {'key': 'value'}
@@ -362,6 +362,16 @@ class MetaDataView(View):
         form = MetaDataForm
         data = MetaData.objects.all()
         return render(request, self.template_name, {'form': form,'data':data})
+class CalDataView(View):
+    # form_class = CalDataForm
+    # initial = {'key': 'value'}
+    template_name = 'shopee/cal_data.html'
+
+    def get(self, request, *args, **kwargs):
+        # form = self.form_class()
+        # form = CalDataForm
+        data = CalData.objects.all()
+        return render(request, self.template_name, {'data':data})
 import json
 from django.core.paginator import  Paginator
 from django.forms.models import model_to_dict
@@ -466,6 +476,37 @@ def get_meta_data(request):
     # if meta_data:
     #     meta_data = meta_data.split(" ")[0]
     #     data = data.filter(meta_data=meta_data)
+    if order!='asc':
+        sort='-'+sort
+    data = data.order_by(sort)
+    paginator=Paginator(data,rows)
+    pages=paginator.get_page(page)
+    for li in pages:
+        data_list.append(model_to_dict(li))
+    json_list = json.dumps(len(data_list))
+    
+    # print(data_list)
+    # print(paginator.count)
+    json_data_list = {'rows':data_list,'total':paginator.count}
+    return HttpResponse(json.dumps(json_data_list, indent=4, sort_keys=True, default=str))
+
+def get_cal_data(request):
+    sort=request.POST.get('sort','total_search')
+    order=request.POST.get('order','asc')
+    page=request.POST.get('page',1)
+    rows=request.POST.get('rows',15)
+ 
+    product=request.POST.get('product','')
+    store_id=request.POST.get('store_id','')
+    product_id=request.POST.get('t','')
+    date_1=request.POST.get('date_1','')
+    date_2=request.POST.get('date_2','')
+    status=request.POST.get('status','')
+
+    # print(product,store_id,product_id,date_1,date_2,status)
+    data_list = []
+    data = CalData.objects.all()
+
     if order!='asc':
         sort='-'+sort
     data = data.order_by(sort)

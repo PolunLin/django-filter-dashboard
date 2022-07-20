@@ -1,6 +1,6 @@
 from django import forms
 from matplotlib import widgets
-from .models import AdData,MetaData
+from .models import AdData,MetaData,CalData
 from dal import autocomplete
 
 
@@ -45,3 +45,20 @@ class MetaDataForm(forms.ModelForm):
     class Meta:
         model = MetaData
         fields =["product","store_id","product_id","date_1","date_2","status"]      
+
+
+
+# class CalDataForm(forms.ModelForm):
+#     def __init__(self, *args, **kwargs):
+#         super(CalDataForm, self).__init__(*args, **kwargs)
+#         for visible in self.visible_fields():
+#             visible.field.widget.attrs['class'] = 'easyui-combobox'
+#             visible.field.widget.attrs['name'] = visible.field.label
+#             visible.field.widget.attrs['style'] = 'width:140ch'
+#         for field,value in self.fields.items():
+#             self.fields[field].widget.attrs['id']=field
+#             self.fields[field].widget.attrs['name']=field
+
+#     class Meta:
+#         model = CalData
+#         fields =[]   

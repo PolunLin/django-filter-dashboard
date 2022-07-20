@@ -56,14 +56,14 @@
           {% if request.user.is_active %}
           {% endcomment %}
           <li class="nav-item analysis-btn">
-            <a class="nav-link header {% block nav_upload %}{% endblock %}" href="{% url 'shopee:ad_data' %}">{% trans "Ad Data" %}</a>
+            <a class="nav-link header {% block nav_upload %}{% endblock %}" href="{% url 'shopee:ad_data' %}">廣告資料</a>
           </li>
           <li class="nav-item myresult-btn ">
-            <a class="nav-link header {% block nav_myresult %}{% endblock %}" href="{% url 'shopee:meta_data' %}">{% trans "Meta Data" %}</a>
+            <a class="nav-link header {% block nav_myresult %}{% endblock %}" href="{% url 'shopee:meta_data' %}">詮釋資料</a>
             </li>
           
             <li class="nav-item useractivation-btn ">
-            <a class="nav-link header {% block nav_useractivation %}{% endblock %}" href="">{% trans "Cal Data" %}</a>
+            <a class="nav-link header {% block nav_useractivation %}{% endblock %}" href="{% url 'shopee:cal_data' %}">統計資料</a>
             </li>
      
       
