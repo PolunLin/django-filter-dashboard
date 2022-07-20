@@ -31,7 +31,7 @@
         <tr>
             <th field="total_search" width="50" sortable="true">瀏覽數</th>
             <th field="total_transfer" width="50" sortable="true">轉換</th>
-            <th field="total_click" width="50" sortable="true">點擊數</th>
+            <th field="total_click" width="50" sortable="true"  styler="cellStyler">點擊數</th>
             <th field="total_dtransfer" width="50" sortable="true">直接轉換</th>
             <th field="total_cost" width="50" sortable="true">花費</th>
             <th field="total_sell" width="50" sortable="true">銷售數</th>
@@ -53,65 +53,77 @@
 </main> 
 {% block filejs %}
 <script>
-    var url;
-    $(function(){
-       
-        $("#dg").datagrid('enableFilter', [{
-            field:'keyword',
-            type:'combobox',
-            options:{precision:1},
-            trigger: 'none',
-        }]);
-    });
-
-    $(".easyui-combobox").each(function(index,value){
-        $(this).combobox({
-            onChange: function(row){
-                var keyword =  $('#keyword').combobox('getText')
-                var mode =  $('#mode').combobox('getText')
-                var search_request =  $('#search_request').combobox('getText')
-                var status =  $('#status').combobox('getText')
-                var meta_data =  $('#meta_data').combobox('getText')
-                
-                item_obj = {
-                    keyword: $('#keyword').combobox('getText'),
-                    mode: $('#mode').combobox('getText'),
-                    search_request: $('#search_request').combobox('getText'),
-                    status: $('#status').combobox('getText'),
-                    meta_data: $('#meta_data').combobox('getText'),
-                }
-                for (const key in item_obj) {
-                    if (item_obj[key] =='---------'){
-                        delete item_obj[key]
+    $.extend($.fn.validatebox.defaults.rules, {
+        greaterThan:{
+            validator: function(value,param){
+                var v1 = $(param[0]).datebox('getValue');
+                var d1 = $.fn.datebox.defaults.parser(v1);
+                var d2 = $.fn.datebox.defaults.parser(value);
+                return d2 > d1;
+            },
+            message: 'Please select a greater date.'
+        }
+    })
+    function filter_table(row){
+        var product =  $('#product').combobox('getText')
+        var store_id =  $('#store_id').combobox('getText')
+        var product_id =  $('#product_id').combobox('getText')
+        {% comment %} var status =  $('#pstatus').combobox('getText') {% endcomment %}
+        var date_1 = $('#date_1').datebox('getValue');
+        var date_2 = $('#date_2').datebox('getValue');
+        
+        item_obj = {
+            product:  $('#product').combobox('getText'),
+            store_id:$('#store_id').combobox('getText'),
+            product_id: $('#product_id').combobox('getText'),
+            {% comment %} status: $('#pstatus').combobox('getText'), {% endcomment %}
+            date_1: $('#date_1').datebox('getValue'),
+            date_2: $('#date_2').datebox('getValue'),
+        }
+        for (const key in item_obj) {
+            if (item_obj[key] =='---------' ||item_obj[key] ==''){
+                delete item_obj[key]
+            }   
+        }
+        $('#dg').datagrid({
+            loader: function(param, success, error){
+                var opts = $(this).datagrid('options');
+                if (!opts.url) return false;
+                $.ajax({
+                    type: opts.method,
+                    url: opts.url,
+                    data: item_obj,
+                    dataType: 'json',
+                    success: function(data){
+                        console.log(data)
+                        success(data);
+                    },
+                    error: function(){
+                        error.apply(this, arguments);
                     }
-                    
-                }
-              
-                $('#dg').datagrid({
-                    loader: function(param, success, error){
-                        var opts = $(this).datagrid('options');
-                        if (!opts.url) return false;
-                        $.ajax({
-                            type: opts.method,
-                            url: opts.url,
-                            data: item_obj,
-                            dataType: 'json',
-                            success: function(data){
-                                console.log(data)
-                                success(data);
-                            },
-                            error: function(){
-                                error.apply(this, arguments);
-                            }
-                        });
-                    }
-                })
-           
-                
+                });
             }
         })
-                   });  
-    
+   
+        
+    }
+    $(".easyui-combobox").each(function (index,value){
+        $(this).combobox({
+            onChange: filter_table
+        })
+                   })
+    $(".easyui-datebox").each(function (index,value){
+        $(this).datebox({
+            onChange: filter_table
+        })
+                   })
+
+    function cellStyler(value,row,index){
+        if (value > 30){
+            return 'background-color:#ffee00;color:red;';
+        }
+    }
+
     
     </script>
 {% endblock filejs %}

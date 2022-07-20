@@ -521,6 +521,21 @@ def get_cal_data(request):
     # print(product,store_id,product_id,date_1,date_2,status)
     data_list = []
     data = CalData.objects.all()
+    if product:
+        data = data.filter(meta_data__product=product)
+    if store_id:
+        data = data.filter(meta_data__store_id=store_id)
+    if product_id:
+        data = data.filter(meta_data__product_id=product_id)
+
+    if date_1:
+        date_1 = datetime.strptime(date_1,"%m/%d/%Y")
+        data = data.filter(meta_data__date_1__gte=date_1)
+    if date_2:
+        date_2 = datetime.strptime(date_2,"%m/%d/%Y")
+        data = data.filter(meta_data__date_2__lte=date_2)
+    # print(product,store_id,product_id,date_1,date_2,status)
+
 
     if order!='asc':
         sort='-'+sort
